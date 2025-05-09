@@ -46,3 +46,21 @@ export async function createProduct(prevState: unknown, formData: FormData) {
 
     redirect("/admin/products");
 }
+
+export async function toggleProductAvailability(id: string, isAvailableForPurchase: boolean) {
+    await prisma.product.update({
+        where: { id },
+        data: { isAvailableForPurchase }
+    });
+};
+
+export async function deleteProduct(id: string) {
+    const product = await prisma.product.findUnique({ where: { id } });
+    if (!product) {
+        throw new Error("Product not found");
+    }
+
+    await prisma.product.delete({ where: { id } });
+    await fs.unlink(product.filePath);
+    await fs.unlink(`public${product.imagePath}`);
+};
