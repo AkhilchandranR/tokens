@@ -42,7 +42,7 @@ export default function ProductForm() {
                 <Input type="file" id="image" name="image" required/>
                 {error.image && <div className="text-destructive">{error.image}</div>}
             </div>
-            <Button type="submit">Save</Button>
+            {SubmitButton()}
         </form>
     )
 }

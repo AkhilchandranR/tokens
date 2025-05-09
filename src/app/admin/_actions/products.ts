@@ -35,7 +35,7 @@ export async function createProduct(prevState: unknown, formData: FormData) {
     const imagePath = `/products/${crypto.randomUUID()}-${image.name}`;
     await fs.writeFile(`public${imagePath}`, Buffer.from(await image.arrayBuffer()));
 
-    prisma.product.create({ data: {
+    await prisma.product.create({ data: {
         isAvailableForPurchase: false,
         name,
         description,
