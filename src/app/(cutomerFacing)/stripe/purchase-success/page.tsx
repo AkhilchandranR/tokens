@@ -45,8 +45,7 @@ export default async function PurchaseSuccessPage({
                     <div className="line-clamp-3 text-muted-foreground">{product.description}</div>
                     <Button className="mt-4" size="lg" asChild>
                         { isSuccess ? (
-                            // work on this link
-                            <a></a>
+                            <a href={`/products/download/${await createDownloadVerification(product.id)}`}>Download</a>
                         ): (
                             <Link href={`/products/${product.id}/purchase`}>
                                 Try Again
@@ -58,3 +57,12 @@ export default async function PurchaseSuccessPage({
         </div>
     )
 }
+
+async function createDownloadVerification(productId: string) {
+    return (await prisma.downloadVerification.create({
+        data: {
+            productId,
+            expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24)
+        }
+    })).id
+};
