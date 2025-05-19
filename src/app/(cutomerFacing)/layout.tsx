@@ -13,6 +13,6 @@ export default function Layout({
         <NavLink href="/products">Products</NavLink>
         <NavLink href="/orders">My Orders</NavLink>
     </Nav>
-    <div className="container my-6">{children}</div>
+    <div className="container mx-auto my-6">{children}</div>
     </>
   };
