@@ -114,6 +114,9 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -142,7 +145,8 @@ exports.Prisma.OrderScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId',
-  productId: 'productId'
+  productId: 'productId',
+  discountCodeId: 'discountCodeId'
 };
 
 exports.Prisma.DownloadVerificationScalarFieldEnum = {
@@ -152,17 +156,44 @@ exports.Prisma.DownloadVerificationScalarFieldEnum = {
   productId: 'productId'
 };
 
+exports.Prisma.DiscountCodeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  discountAmount: 'discountAmount',
+  discountType: 'discountType',
+  uses: 'uses',
+  isActive: 'isActive',
+  allProducts: 'allProducts',
+  createdAt: 'createdAt',
+  limit: 'limit',
+  expiresAt: 'expiresAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+exports.DiscountCodeType = exports.$Enums.DiscountCodeType = {
+  PERCENTAGE: 'PERCENTAGE',
+  FIXED: 'FIXED'
+};
 
 exports.Prisma.ModelName = {
   Product: 'Product',
   User: 'User',
   Order: 'Order',
-  DownloadVerification: 'DownloadVerification'
+  DownloadVerification: 'DownloadVerification',
+  DiscountCode: 'DiscountCode'
 };
 
 /**
