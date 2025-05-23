@@ -7,6 +7,7 @@ import { formatNumber } from "@/lib/formatters";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ActiveToggleDropdownItem, DeleteDropdownItem } from "../products/_components/ProductActions";
 import { prisma } from "@/app/db/db";
+import { DiscountCode } from "@/generated/prisma";
 
 const WHERE_EXPIRED = {
     OR: [
@@ -55,41 +56,45 @@ export default async function DiscountCodesPage() {
     )
 };
 
-function DiscountCodesTable() {
-    return null;
+type DiscountCodesTableProps = {
+    discountCodes: Awaited<ReturnType<typeof getUnExpiredDiscountCodes>>
+}
 
+function DiscountCodesTable({ discountCodes }: DiscountCodesTableProps) {
     return (
         <Table>
             <TableHeader>
                 <TableRow>
                     <TableHead className="w-0">
-                        <span className="sr-only">Available for Purchase</span>
+                        <span className="sr-only">Is Active</span>
                     </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Price</TableHead>
+                    <TableHead>Code</TableHead>
+                    <TableHead>Discount</TableHead>
+                    <TableHead>Expires</TableHead>
+                    <TableHead>Remaining Uses</TableHead>
                     <TableHead>Orders</TableHead>
+                    <TableHead>Products</TableHead>
                     <TableHead className="sr-only">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {products.map(product => (
-                    <TableRow key={product.id}>
+                {discountCodes.map(discountCode => (
+                    <TableRow key={discountCode.id}>
                         <TableCell>
-                            {product.isAvailableForPurchase ? (
+                            {discountCode.isActive ? (
                                 <>
-                                <span className="sr-only">Available</span>
+                                <span className="sr-only">Active</span>
                                 <CheckCircle2 className="stroke-green-600"/>
                                 </>
                             ): (
                                 <>
-                                <span className="sr-only">Not Available</span>
+                                <span className="sr-only">Inactive</span>
                                 <XCircle className="stroke-destructive"/>
                                 </>
                             )}
                         </TableCell>
-                        <TableCell>{product.name}</TableCell>
-                        {/* @ts-ignore */}
-                        <TableCell>{formatCurrency(product.priceInCents / 100)}</TableCell>
+                        <TableCell>{discountCode.code}</TableCell>
+                        <TableCell>{formatDiscountCode(discountCode)}</TableCell>
                         <TableCell>{formatNumber(product._count.orders)}</TableCell>
                         <TableCell>
                             <DropdownMenu>

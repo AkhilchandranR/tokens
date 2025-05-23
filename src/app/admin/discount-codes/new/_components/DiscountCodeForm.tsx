@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DiscountCodeType } from "@/generated/prisma";
-import { useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useActionState, useState } from "react";
+import { useFormStatus } from "react-dom";
 
-export default function DiscountCodeForm() {
-  const [error, action] = useFormState(addDiscountCode, {});
+export default function DiscountCodeForm({ products }: { products: { name: string; id: string }[] }) {
+  const [error, action] = useActionState(addDiscountCode, {});
   const [allProducts, setAllProducts] = useState(true);
   return (
     <form className="space-y-8" action={action}>
@@ -82,11 +82,18 @@ export default function DiscountCodeForm() {
       </div>
       <div className="space-y-2">
         <Label>Allowed Products</Label>
+        {error.allProducts && <div className="text-destructive">{error.allProducts}</div>}
+        {error.productIds && <div className="text-destructive">{error.productIds}</div>}
         <div className="flex gap-2 items-center">
             <Checkbox id="allProducts" name="allProducts" checked={allProducts} onCheckedChange={e => setAllProducts(e === true)} />
             <Label htmlFor="allProducts">All Products</Label>
-        </div> 
-        {error.code && <div className="text-destructive">{error.code}</div>}
+        </div>
+        { products.map(product => (
+            <div className="flex gap-2 items-center">
+              <Checkbox id={product.id} name="productIds" value={product.id} disabled={allProducts}/>
+              <Label htmlFor={product.id}>{product.name}</Label>
+            </div>
+        ))}
       </div>
       {SubmitButton()}
     </form>
