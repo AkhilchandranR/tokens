@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "../_components/PageHeader";
 import Link from "next/link";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, MoreVertical, XCircle } from "lucide-react";
-import { formatNumber } from "@/lib/formatters";
+import { CheckCircle2, Globe, Infinity, Minus, MoreVertical, XCircle } from "lucide-react";
+import { formatDateTime, formatDiscountCode, formatNumber } from "@/lib/formatters";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ActiveToggleDropdownItem, DeleteDropdownItem } from "../products/_components/ProductActions";
 import { prisma } from "@/app/db/db";
-import { DiscountCode } from "@/generated/prisma";
+import { DiscountCode, Prisma } from "@/generated/prisma";
+import { ActiveToggleDropdownItem, DeleteDropdownItem } from "./new/_components/DiscountCodeActions";
 
 const WHERE_EXPIRED = {
     OR: [
@@ -16,9 +16,23 @@ const WHERE_EXPIRED = {
     ]
 };
 
+const SELECT_FIELDS: Prisma.DiscountCodeSelect = {
+    id: true,
+    allProducts: true,
+    code: true,
+    discountAmount: true,
+    discountType: true,
+    expiresAt: true,
+    limit: true,
+    uses: true,
+    isActive: true,
+    products: { select: { name: true }},
+    _count: { select: { orders: true }}
+}
+
 function getExpiredDiscountCodes() {
     return prisma.discountCode.findMany({
-        // select: {},
+        select: SELECT_FIELDS,
         where: WHERE_EXPIRED,
         orderBy: { createdAt: "asc" },
     })
@@ -26,7 +40,7 @@ function getExpiredDiscountCodes() {
 
 function getUnExpiredDiscountCodes() {
     return prisma.discountCode.findMany({
-        // select: {},
+        select: SELECT_FIELDS,
         where: {NOT: WHERE_EXPIRED},
         orderBy: { createdAt: "asc" },
     })
@@ -46,11 +60,11 @@ export default async function DiscountCodesPage() {
                 <Link href="/admin/discount-codes/new">Add Coupons</Link>
             </Button>
         </div>
-        <DiscountCodesTable discountCodes={unExpiredDiscountCodes} />
+        <DiscountCodesTable discountCodes={unExpiredDiscountCodes} canDecactivate />
 
         <div className="mt-8">
             <h2 className="text-xl font-bold">Expired Coupons</h2>
-            <DiscountCodesTable discountCodes={expiredDiscountCodes} />
+            <DiscountCodesTable discountCodes={expiredDiscountCodes} isInactive />
         </div>
         </>
     )
@@ -58,9 +72,15 @@ export default async function DiscountCodesPage() {
 
 type DiscountCodesTableProps = {
     discountCodes: Awaited<ReturnType<typeof getUnExpiredDiscountCodes>>
+    isInactive?: boolean;
+    canDecactivate?: boolean;
 }
 
-function DiscountCodesTable({ discountCodes }: DiscountCodesTableProps) {
+function DiscountCodesTable({ 
+    discountCodes,
+    isInactive = false,
+    canDecactivate = false
+ }: DiscountCodesTableProps) {
     return (
         <Table>
             <TableHeader>
@@ -81,7 +101,7 @@ function DiscountCodesTable({ discountCodes }: DiscountCodesTableProps) {
                 {discountCodes.map(discountCode => (
                     <TableRow key={discountCode.id}>
                         <TableCell>
-                            {discountCode.isActive ? (
+                            {discountCode.isActive && !isInactive ? (
                                 <>
                                 <span className="sr-only">Active</span>
                                 <CheckCircle2 className="stroke-green-600"/>
@@ -95,7 +115,28 @@ function DiscountCodesTable({ discountCodes }: DiscountCodesTableProps) {
                         </TableCell>
                         <TableCell>{discountCode.code}</TableCell>
                         <TableCell>{formatDiscountCode(discountCode)}</TableCell>
-                        <TableCell>{formatNumber(product._count.orders)}</TableCell>
+                        <TableCell>{discountCode.expiresAt == null ? (
+                            <Minus />
+                        ): (
+                            formatDateTime(discountCode.expiresAt)
+                        )
+                        }</TableCell>
+                        <TableCell>{discountCode.limit == null ? (
+                            <Infinity />
+                        ): (
+                            formatNumber(discountCode.limit - discountCode.uses)
+                        )
+                        }</TableCell>
+                        <TableCell>
+                            {formatNumber(discountCode._count.orders)}
+                        </TableCell>
+                        <TableCell>
+                            {discountCode.allProducts ? (
+                                <Globe />
+                            ): (
+                                discountCode.products.map(p => p.name).join(", ")
+                            )}
+                        </TableCell>
                         <TableCell>
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
@@ -103,18 +144,16 @@ function DiscountCodesTable({ discountCodes }: DiscountCodesTableProps) {
                                     <span className="sr-only">Actions</span>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent>
-                                    <DropdownMenuItem asChild>
-                                        <a download href={`/admin/products/${product.id}/download`}>
-                                            Download
-                                        </a>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem asChild>
-                                        <Link href={`/admin/products/${product.id}/edit`}>
-                                            Edit
-                                        </Link>
-                                    </DropdownMenuItem>
-                                    {/* <ActiveToggleDropdownItem id={product.id} isAvailableForPurchase={product.isAvailableForPurchase} /> */}
-                                    {/* <DeleteDropdownItem id={product.id} disabled={product._count.orders > 0} /> */}
+                                    { canDecactivate && (
+                                        <ActiveToggleDropdownItem 
+                                            id={discountCode.id} 
+                                            isActive={discountCode.isActive} 
+                                        />
+                                    )}
+                                    <DeleteDropdownItem 
+                                        id={discountCode.id} 
+                                        disabled={discountCode._count.orders > 0} 
+                                    />
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

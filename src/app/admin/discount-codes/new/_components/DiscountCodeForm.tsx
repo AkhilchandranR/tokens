@@ -13,6 +13,11 @@ import { useFormStatus } from "react-dom";
 export default function DiscountCodeForm({ products }: { products: { name: string; id: string }[] }) {
   const [error, action] = useActionState(addDiscountCode, {});
   const [allProducts, setAllProducts] = useState(true);
+  //subtract timezone
+  const today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+
+
   return (
     <form className="space-y-8" action={action}>
       <div className="space-y-2">
@@ -71,7 +76,7 @@ export default function DiscountCodeForm({ products }: { products: { name: strin
           type="datetime-local"
           id="expiresAt"
           name="expiresAt"
-          min={new Date().toJSON().split(":").slice(0, -1).join(":")}
+          min={today.toJSON().split(":").slice(0, -1).join(":")}
         />
         <div className="text-muted-foreground">
           Leave blank for no expiration
