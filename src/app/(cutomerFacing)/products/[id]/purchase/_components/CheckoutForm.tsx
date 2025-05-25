@@ -3,11 +3,13 @@
 import { userOrderExists } from "@/app/actions/order";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/formatters";
 import { Elements, LinkAuthenticationElement, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { set } from "zod";
 
 type CheckoutFormProps = {
@@ -52,6 +54,7 @@ function Form({ priceInCents, productId }: { priceInCents: number, productId: st
     const[isLoading, setIsLoading] = useState(false);
     const[errorMessage, setErrorMessage] = useState<string>();
     const[email, setEmail] = useState<string>();
+    const discountCodeRef = useRef<HTMLInputElement>(null);
 
     async function handleSubmit(e: FormEvent) {
         e.preventDefault();
@@ -91,6 +94,14 @@ function Form({ priceInCents, productId }: { priceInCents: number, productId: st
             <CardContent>
                 <PaymentElement />
                 <LinkAuthenticationElement onChange={(e) => setEmail(e.value.email)}/>
+                <div className="space-y-2 mt-4">
+                    <Label htmlFor="discountCode">Coupon</Label>
+                    <Input id="discountCode" type="text" name="discountCode"
+                        className="max-w-xs w-full"
+                        ref={discountCodeRef}
+                    />
+                </div>
+                <Button >Apply</Button>
             </CardContent>
             <CardFooter>
                 <Button className="w-full" size="lg" disabled={stripe == null || elements == null || isLoading}>
