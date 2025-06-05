@@ -40,7 +40,7 @@ export default async function PurchaseSuccessPage({
                     <Image src={product.imagePath} fill alt={product.name} />
                 </div>
                 <div className="text-lg">
-                    {formatCurrency(product.priceInCents / 100)}
+                    {/* {formatCurrency(product.priceInCents / 100)} */}
                     <h1 className="text-2xl font-bold">{product.name}</h1>
                     <div className="line-clamp-3 text-muted-foreground">{product.description}</div>
                     <Button className="mt-4" size="lg" asChild>

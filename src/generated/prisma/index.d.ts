@@ -3822,7 +3822,7 @@ export namespace Prisma {
     updatedAt: Date
     userId: string
     productId: string
-    discountCodeId: string
+    discountCodeId: string | null
     _count: OrderCountAggregateOutputType | null
     _avg: OrderAvgAggregateOutputType | null
     _sum: OrderSumAggregateOutputType | null
@@ -3854,7 +3854,7 @@ export namespace Prisma {
     discountCodeId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    discountCode?: boolean | DiscountCodeDefaultArgs<ExtArgs>
+    discountCode?: boolean | Order$discountCodeArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3867,7 +3867,7 @@ export namespace Prisma {
     discountCodeId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    discountCode?: boolean | DiscountCodeDefaultArgs<ExtArgs>
+    discountCode?: boolean | Order$discountCodeArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3880,7 +3880,7 @@ export namespace Prisma {
     discountCodeId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    discountCode?: boolean | DiscountCodeDefaultArgs<ExtArgs>
+    discountCode?: boolean | Order$discountCodeArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectScalar = {
@@ -3897,17 +3897,17 @@ export namespace Prisma {
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    discountCode?: boolean | DiscountCodeDefaultArgs<ExtArgs>
+    discountCode?: boolean | Order$discountCodeArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    discountCode?: boolean | DiscountCodeDefaultArgs<ExtArgs>
+    discountCode?: boolean | Order$discountCodeArgs<ExtArgs>
   }
   export type OrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     product?: boolean | ProductDefaultArgs<ExtArgs>
-    discountCode?: boolean | DiscountCodeDefaultArgs<ExtArgs>
+    discountCode?: boolean | Order$discountCodeArgs<ExtArgs>
   }
 
   export type $OrderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3915,7 +3915,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       product: Prisma.$ProductPayload<ExtArgs>
-      discountCode: Prisma.$DiscountCodePayload<ExtArgs>
+      discountCode: Prisma.$DiscountCodePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3924,7 +3924,7 @@ export namespace Prisma {
       updatedAt: Date
       userId: string
       productId: string
-      discountCodeId: string
+      discountCodeId: string | null
     }, ExtArgs["result"]["order"]>
     composites: {}
   }
@@ -4321,7 +4321,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    discountCode<T extends DiscountCodeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DiscountCodeDefaultArgs<ExtArgs>>): Prisma__DiscountCodeClient<$Result.GetResult<Prisma.$DiscountCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    discountCode<T extends Order$discountCodeArgs<ExtArgs> = {}>(args?: Subset<T, Order$discountCodeArgs<ExtArgs>>): Prisma__DiscountCodeClient<$Result.GetResult<Prisma.$DiscountCodePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4751,6 +4751,25 @@ export namespace Prisma {
      * Limit how many Orders to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Order.discountCode
+   */
+  export type Order$discountCodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscountCode
+     */
+    select?: DiscountCodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DiscountCode
+     */
+    omit?: DiscountCodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DiscountCodeInclude<ExtArgs> | null
+    where?: DiscountCodeWhereInput
   }
 
   /**
@@ -7352,10 +7371,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     userId?: StringFilter<"Order"> | string
     productId?: StringFilter<"Order"> | string
-    discountCodeId?: StringFilter<"Order"> | string
+    discountCodeId?: StringNullableFilter<"Order"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-    discountCode?: XOR<DiscountCodeScalarRelationFilter, DiscountCodeWhereInput>
+    discountCode?: XOR<DiscountCodeNullableScalarRelationFilter, DiscountCodeWhereInput> | null
   }
 
   export type OrderOrderByWithRelationInput = {
@@ -7365,7 +7384,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     productId?: SortOrder
-    discountCodeId?: SortOrder
+    discountCodeId?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     product?: ProductOrderByWithRelationInput
     discountCode?: DiscountCodeOrderByWithRelationInput
@@ -7381,10 +7400,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     userId?: StringFilter<"Order"> | string
     productId?: StringFilter<"Order"> | string
-    discountCodeId?: StringFilter<"Order"> | string
+    discountCodeId?: StringNullableFilter<"Order"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
-    discountCode?: XOR<DiscountCodeScalarRelationFilter, DiscountCodeWhereInput>
+    discountCode?: XOR<DiscountCodeNullableScalarRelationFilter, DiscountCodeWhereInput> | null
   }, "id">
 
   export type OrderOrderByWithAggregationInput = {
@@ -7394,7 +7413,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     productId?: SortOrder
-    discountCodeId?: SortOrder
+    discountCodeId?: SortOrderInput | SortOrder
     _count?: OrderCountOrderByAggregateInput
     _avg?: OrderAvgOrderByAggregateInput
     _max?: OrderMaxOrderByAggregateInput
@@ -7412,7 +7431,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     userId?: StringWithAggregatesFilter<"Order"> | string
     productId?: StringWithAggregatesFilter<"Order"> | string
-    discountCodeId?: StringWithAggregatesFilter<"Order"> | string
+    discountCodeId?: StringNullableWithAggregatesFilter<"Order"> | string | null
   }
 
   export type DownloadVerificationWhereInput = {
@@ -7706,7 +7725,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutOrdersInput
     product: ProductCreateNestedOneWithoutOrdersInput
-    discountCode: DiscountCodeCreateNestedOneWithoutOrdersInput
+    discountCode?: DiscountCodeCreateNestedOneWithoutOrdersInput
   }
 
   export type OrderUncheckedCreateInput = {
@@ -7716,7 +7735,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     productId: string
-    discountCodeId: string
+    discountCodeId?: string | null
   }
 
   export type OrderUpdateInput = {
@@ -7726,7 +7745,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutOrdersNestedInput
     product?: ProductUpdateOneRequiredWithoutOrdersNestedInput
-    discountCode?: DiscountCodeUpdateOneRequiredWithoutOrdersNestedInput
+    discountCode?: DiscountCodeUpdateOneWithoutOrdersNestedInput
   }
 
   export type OrderUncheckedUpdateInput = {
@@ -7736,7 +7755,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    discountCodeId?: StringFieldUpdateOperationsInput | string
+    discountCodeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderCreateManyInput = {
@@ -7746,7 +7765,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     productId: string
-    discountCodeId: string
+    discountCodeId?: string | null
   }
 
   export type OrderUpdateManyMutationInput = {
@@ -7763,7 +7782,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
-    discountCodeId?: StringFieldUpdateOperationsInput | string
+    discountCodeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DownloadVerificationCreateInput = {
@@ -8106,6 +8125,21 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -8116,9 +8150,14 @@ export namespace Prisma {
     isNot?: ProductWhereInput
   }
 
-  export type DiscountCodeScalarRelationFilter = {
-    is?: DiscountCodeWhereInput
-    isNot?: DiscountCodeWhereInput
+  export type DiscountCodeNullableScalarRelationFilter = {
+    is?: DiscountCodeWhereInput | null
+    isNot?: DiscountCodeWhereInput | null
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type OrderCountOrderByAggregateInput = {
@@ -8157,6 +8196,24 @@ export namespace Prisma {
 
   export type OrderSumOrderByAggregateInput = {
     pricePaidInCents?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type DownloadVerificationCountOrderByAggregateInput = {
@@ -8213,11 +8270,6 @@ export namespace Prisma {
     every?: ProductWhereInput
     some?: ProductWhereInput
     none?: ProductWhereInput
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
   }
 
   export type ProductOrderByRelationAggregateInput = {
@@ -8533,12 +8585,18 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutOrdersInput, ProductUpdateWithoutOrdersInput>, ProductUncheckedUpdateWithoutOrdersInput>
   }
 
-  export type DiscountCodeUpdateOneRequiredWithoutOrdersNestedInput = {
+  export type DiscountCodeUpdateOneWithoutOrdersNestedInput = {
     create?: XOR<DiscountCodeCreateWithoutOrdersInput, DiscountCodeUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: DiscountCodeCreateOrConnectWithoutOrdersInput
     upsert?: DiscountCodeUpsertWithoutOrdersInput
+    disconnect?: DiscountCodeWhereInput | boolean
+    delete?: DiscountCodeWhereInput | boolean
     connect?: DiscountCodeWhereUniqueInput
     update?: XOR<XOR<DiscountCodeUpdateToOneWithWhereWithoutOrdersInput, DiscountCodeUpdateWithoutOrdersInput>, DiscountCodeUncheckedUpdateWithoutOrdersInput>
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type ProductCreateNestedOneWithoutDownloadVerificationsInput = {
@@ -8758,11 +8816,35 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedEnumDiscountCodeTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.DiscountCodeType | EnumDiscountCodeTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.DiscountCodeType[] | ListEnumDiscountCodeTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.DiscountCodeType[] | ListEnumDiscountCodeTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumDiscountCodeTypeFilter<$PrismaModel> | $Enums.DiscountCodeType
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
@@ -8774,6 +8856,13 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumDiscountCodeTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.DiscountCodeType | EnumDiscountCodeTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DiscountCodeType[] | ListEnumDiscountCodeTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DiscountCodeType[] | ListEnumDiscountCodeTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDiscountCodeTypeFilter<$PrismaModel> | $Enums.DiscountCodeType
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -8844,7 +8933,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutOrdersInput
-    discountCode: DiscountCodeCreateNestedOneWithoutOrdersInput
+    discountCode?: DiscountCodeCreateNestedOneWithoutOrdersInput
   }
 
   export type OrderUncheckedCreateWithoutProductInput = {
@@ -8853,7 +8942,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    discountCodeId: string
+    discountCodeId?: string | null
   }
 
   export type OrderCreateOrConnectWithoutProductInput = {
@@ -8947,7 +9036,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     userId?: StringFilter<"Order"> | string
     productId?: StringFilter<"Order"> | string
-    discountCodeId?: StringFilter<"Order"> | string
+    discountCodeId?: StringNullableFilter<"Order"> | string | null
   }
 
   export type DownloadVerificationUpsertWithWhereUniqueWithoutProductInput = {
@@ -9014,7 +9103,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     product: ProductCreateNestedOneWithoutOrdersInput
-    discountCode: DiscountCodeCreateNestedOneWithoutOrdersInput
+    discountCode?: DiscountCodeCreateNestedOneWithoutOrdersInput
   }
 
   export type OrderUncheckedCreateWithoutUserInput = {
@@ -9023,7 +9112,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     productId: string
-    discountCodeId: string
+    discountCodeId?: string | null
   }
 
   export type OrderCreateOrConnectWithoutUserInput = {
@@ -9426,7 +9515,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
-    discountCodeId: string
+    discountCodeId?: string | null
   }
 
   export type DownloadVerificationCreateManyProductInput = {
@@ -9441,7 +9530,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutOrdersNestedInput
-    discountCode?: DiscountCodeUpdateOneRequiredWithoutOrdersNestedInput
+    discountCode?: DiscountCodeUpdateOneWithoutOrdersNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutProductInput = {
@@ -9450,7 +9539,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    discountCodeId?: StringFieldUpdateOperationsInput | string
+    discountCodeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderUncheckedUpdateManyWithoutProductInput = {
@@ -9459,7 +9548,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
-    discountCodeId?: StringFieldUpdateOperationsInput | string
+    discountCodeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type DownloadVerificationUpdateWithoutProductInput = {
@@ -9527,7 +9616,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     productId: string
-    discountCodeId: string
+    discountCodeId?: string | null
   }
 
   export type OrderUpdateWithoutUserInput = {
@@ -9536,7 +9625,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutOrdersNestedInput
-    discountCode?: DiscountCodeUpdateOneRequiredWithoutOrdersNestedInput
+    discountCode?: DiscountCodeUpdateOneWithoutOrdersNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutUserInput = {
@@ -9545,7 +9634,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productId?: StringFieldUpdateOperationsInput | string
-    discountCodeId?: StringFieldUpdateOperationsInput | string
+    discountCodeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderUncheckedUpdateManyWithoutUserInput = {
@@ -9554,7 +9643,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     productId?: StringFieldUpdateOperationsInput | string
-    discountCodeId?: StringFieldUpdateOperationsInput | string
+    discountCodeId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderCreateManyDiscountCodeInput = {

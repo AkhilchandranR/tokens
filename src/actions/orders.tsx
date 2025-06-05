@@ -2,11 +2,14 @@
 
 import { prisma } from "@/app/db/db"
 import OrderHistoryEmail from "@/app/email/OrderHistory"
+import { getDiscountedAmount, usableDiscountCodeWhere } from "@/lib/discountCodeHelpers"
 import { Resend } from "resend"
+import Stripe from "stripe"
 import { z } from "zod"
 
 const emailSchema = z.string().email()
 const resend = new Resend(process.env.RESENT_API_KEY as string)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 export async function emailOrderHistory(
   prevState: unknown,
@@ -76,4 +79,56 @@ export async function emailOrderHistory(
     message:
       "Check your email to view your order history and download your products.",
   }
+}
+
+export async function createPaymentIntent(
+  email: string,
+  productId: string,
+  discountCodeId?: string
+) {
+  const product = await prisma.product.findUnique({ where: { id: productId } })
+  if (product == null) return { error: "Unexpected Error" }
+
+  const discountCode =
+    discountCodeId == null
+      ? null
+      : await prisma.discountCode.findUnique({
+          where: { id: discountCodeId, ...usableDiscountCodeWhere(product.id) },
+        })
+
+  if (discountCode == null && discountCodeId != null) {
+    return { error: "Coupon has expired" }
+  }
+
+  const existingOrder = await prisma.order.findFirst({
+    where: { user: { email }, productId },
+    select: { id: true },
+  })
+
+  if (existingOrder != null) {
+    return {
+      error:
+        "You have already purchased this product. Try downloading it from the My Orders page",
+    }
+  }
+
+  const amount =
+    discountCode == null
+      ? product.priceInCents
+      : getDiscountedAmount(discountCode, product.priceInCents)
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount,
+    currency: "USD",
+    metadata: {
+      productId: product.id,
+      discountCodeId: discountCode?.id || null,
+    },
+  })
+
+  if (paymentIntent.client_secret == null) {
+    return { error: "Unknown error" }
+  }
+
+  return { clientSecret: paymentIntent.client_secret }
 }

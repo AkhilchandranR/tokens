@@ -1,30 +1,35 @@
-import { prisma } from "@/app/db/db";
-import { notFound } from "next/navigation";
-import Stripe from "stripe";
-import CheckoutForm from "./_components/CheckoutForm";
+import { prisma } from "@/app/db/db"
+import { notFound } from "next/navigation"
+import Stripe from "stripe"
+import { CheckoutForm } from "./_components/CheckoutForm"
+import { usableDiscountCodeWhere } from "@/lib/discountCodeHelpers"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
+export default async function PurchasePage({
+  params: { id },
+  searchParams: { coupon },
+}: {
+  params: { id: string }
+  searchParams: { coupon?: string }
+}) {
+  const product = await prisma.product.findUnique({ where: { id } })
+  if (product == null) return notFound()
 
-export default async function PurchasePage({ params }: { params: { id: string } }) {
-    const { id } = await params; 
-    const product = await prisma.product.findUnique({
-        where: { id },
-    });
+  const discountCode =
+    coupon == null ? undefined : await getDiscountCode(coupon, product.id)
 
-    if(product == null) return notFound();
+  return (
+    <CheckoutForm 
+        product={product} 
+        discountCode={discountCode || undefined}
+    />
+  )
+}
 
-    const paymentIntend = await stripe.paymentIntents.create({
-        amount: product.priceInCents,
-        currency: "USD",
-        metadata: { productId: product.id }
-    });
-
-    if(paymentIntend.client_secret == null) {
-        throw Error("Stripe failed to create payment intend");
-    }
-    
-    return (
-        <CheckoutForm product={product} clientSecret={paymentIntend.client_secret} />
-    )
+function getDiscountCode(coupon: string, productId: string) {
+  return prisma.discountCode.findUnique({
+    select: { id: true, discountAmount: true, discountType: true },
+    where: { ...usableDiscountCodeWhere, code: coupon },
+  })
 }
